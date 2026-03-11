@@ -1,0 +1,40 @@
+version: '3'
+
+dotenv: # .env 자동 로드
+  - .env
+
+vars:
+  NODE_ENV: development
+
+tasks:
+  dev:
+    desc: Next.js 개발 서버 실행
+    cmds:
+      - npm run dev
+    env:
+      NODE_ENV: '{{.NODE_ENV}}'
+
+  build:
+    desc: Next.js 프로덕션 빌드
+    cmds:
+      - npm run build
+
+  start:
+    desc: 빌드된 Next.js 앱 실행
+    cmds:
+      - npm run start
+
+  lint:
+    desc: ESLint 검사 실행
+    cmds:
+      - npm run lint
+
+  db:seed:
+    desc: 허용된 멤버 시드 스크립트 실행
+    cmds:
+      - npm run db:seed
+
+  install:
+    desc: 의존성 설치 (npm install)
+    cmds:
+      - npm install
