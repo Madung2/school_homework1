@@ -1,4 +1,11 @@
 import "dotenv/config";
+import { config } from "dotenv";
+import { resolve } from "path";
+
+// Next.js는 .env.local을 쓰므로, 스크립트 실행 시에도 .env.local 로드
+config({ path: resolve(process.cwd(), ".env.local"), override: true });
+config({ path: resolve(process.cwd(), ".env"), override: false });
+
 import { createClient } from "@libsql/client";
 
 const url = process.env.TURSO_DATABASE_URL;
@@ -26,7 +33,8 @@ async function seed() {
     });
     console.log("kts123@kookmin.ac.kr 허용 리스트에 추가됨");
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "code" in e && e.code === "SQLITE_CONSTRAINT_UNIQUE") {
+    const code = e && typeof e === "object" && "code" in e ? (e as { code: string }).code : "";
+    if (code === "SQLITE_CONSTRAINT" || code === "SQLITE_CONSTRAINT_UNIQUE") {
       console.log("kts123@kookmin.ac.kr 는 이미 등록되어 있음");
     } else throw e;
   }
