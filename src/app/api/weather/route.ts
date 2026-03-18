@@ -5,13 +5,16 @@ import { isAllowedEmail } from "@/lib/turso";
 import { fetchUltraSrtNcst, fetchUltraSrtFcst } from "@/lib/weather";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  const allowed = await isAllowedEmail(session.user.email);
-  if (!allowed) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  // 로컬 개발 시 인증 생략 ( .env.local 에 DEV_SKIP_AUTH=true 설정 시)
+  if (process.env.DEV_SKIP_AUTH !== "true") {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const allowed = await isAllowedEmail(session.user.email);
+    if (!allowed) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
   }
 
   const serviceKey = process.env.WEATHER_API_SERVICE_KEY;

@@ -32,6 +32,7 @@
    - `NEXTAUTH_SECRET`: 임의의 안전한 랜덤 문자열  
    - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: [Google Cloud Console](https://console.cloud.google.com) OAuth 2.0 클라이언트 ID  
    - `WEATHER_API_SERVICE_KEY`: [공공데이터포털](https://www.data.go.kr/)에서 기상청_단기예보 조회서비스 인증키 발급 (일반 인증키, 디코딩된 값 사용 권장)
+   - (선택) `DEV_SKIP_AUTH=true`: 로컬에서 Google 로그인 없이 대시보드 접근. **Vercel 등 배포 환경에는 설정하지 마세요.**
 
 3. Turso 테이블 및 시드  
    - Turso 대시보드 또는 CLI에서 `scripts/schema.sql` 실행  

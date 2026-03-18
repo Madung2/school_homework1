@@ -1,15 +1,9 @@
-const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
-
-function nowKst(): Date {
-  return new Date(Date.now() + KST_OFFSET_MS);
-}
-
 /** 오늘 날짜 YYYYMMDD (KST) */
 export function getBaseDate(): string {
-  const d = nowKst();
-  const y = d.getUTCFullYear();
-  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(d.getUTCDate()).padStart(2, "0");
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${y}${m}${day}`;
 }
 
@@ -18,8 +12,8 @@ export function getBaseDate(): string {
  * "매시각 10분 이후에 해당 시각 자료 이용 가능" → 현재 시각 - 10분 후 그 이하 정시.
  */
 export function getBaseTimeNcst(): string {
-  const d = new Date(Date.now() + KST_OFFSET_MS - 10 * 60 * 1000);
-  const h = d.getUTCHours();
+  const d = new Date(Date.now() - 10 * 60 * 1000);
+  const h = d.getHours();
   const hour = String(h).padStart(2, "0");
   return `${hour}00`;
 }
@@ -29,9 +23,9 @@ export function getBaseTimeNcst(): string {
  * 10분 이후 이용 가능 규칙 적용.
  */
 export function getBaseTimeFcst(): string {
-  const d = new Date(Date.now() + KST_OFFSET_MS - 10 * 60 * 1000);
-  const h = d.getUTCHours();
-  const m = d.getUTCMinutes();
+  const d = new Date(Date.now() - 10 * 60 * 1000);
+  const h = d.getHours();
+  const m = d.getMinutes();
   const minute = m < 30 ? "00" : "30";
   const hour = String(h).padStart(2, "0");
   return `${hour}${minute}`;
@@ -39,10 +33,10 @@ export function getBaseTimeFcst(): string {
 
 /** 초단기실황 base_date: 자정 넘겼을 때 전날로 할 수 있음. 실황은 정시 직후에는 전날 23:00 등이 나올 수 있음. */
 export function getBaseDateNcst(): string {
-  const d = new Date(Date.now() + KST_OFFSET_MS - 10 * 60 * 1000);
-  const y = d.getUTCFullYear();
-  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(d.getUTCDate()).padStart(2, "0");
+  const d = new Date(Date.now() - 10 * 60 * 1000);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${y}${m}${day}`;
 }
 

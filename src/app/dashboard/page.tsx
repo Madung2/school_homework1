@@ -55,6 +55,8 @@ function formatTime(t?: string) {
   return `${t.slice(0, 2)}:${t.slice(2)}`;
 }
 
+type ForecastByTime = Record<string, Record<string, string>>;
+
 export default function DashboardPage() {
   const [realtime, setRealtime] = useState<RealtimeItem[]>([]);
   const [forecast, setForecast] = useState<ForecastItem[]>([]);
@@ -82,7 +84,7 @@ export default function DashboardPage() {
     return acc;
   }, {});
 
-  const forecastByTime = forecast.reduce<Record<string, Record<string, string>>((acc, f) => {
+  const forecastByTime = forecast.reduce<ForecastByTime>((acc, f) => {
     const key = `${f.fcstDate ?? ""}-${f.fcstTime ?? ""}`;
     if (!key || key === "-") return acc;
     if (!acc[key]) acc[key] = {};
@@ -102,6 +104,12 @@ export default function DashboardPage() {
             className="px-3 py-1.5 text-sm border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             홈
+          </Link>
+          <Link
+            href="/guestbook"
+            className="px-3 py-1.5 text-sm border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            방명록
           </Link>
           <Link
             href="/api/auth/signout"
