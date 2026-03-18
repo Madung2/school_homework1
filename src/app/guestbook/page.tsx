@@ -77,85 +77,130 @@ export default function GuestbookPage() {
   };
 
   return (
-    <main className="min-h-screen p-6 max-w-2xl mx-auto">
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">방명록</h1>
-        <Link
-          href="/"
-          className="px-3 py-1.5 text-sm border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          홈
-        </Link>
-      </header>
-
-      <form onSubmit={handleSubmit} className="mb-8 p-4 border rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-        <div className="mb-3">
-          <label htmlFor="guestbook-author" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            닉네임 (아이디)
-          </label>
-          <input
-            id="guestbook-author"
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            placeholder="아무 아이디나 입력"
-            maxLength={50}
-            className="w-full px-3 py-2 border rounded dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-            disabled={submitting}
-          />
+    <main className="min-h-screen flex">
+      <aside className="w-56 border-r border-gray-200 dark:border-gray-800 p-4 flex flex-col gap-4">
+        <div>
+          <h1 className="text-base font-bold mb-1">기상 대시보드</h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            기상청 초단기실황·예보
+          </p>
         </div>
-        <div className="mb-3">
-          <label htmlFor="guestbook-content" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            댓글
-          </label>
-          <textarea
-            id="guestbook-content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="방명록에 남길 말을 적어 주세요"
-            rows={3}
-            maxLength={500}
-            className="w-full px-3 py-2 border rounded dark:border-gray-600 dark:bg-gray-800 dark:text-white resize-y"
-            disabled={submitting}
-          />
+        <nav className="flex flex-col gap-1 text-sm">
+          <Link
+            href="/dashboard"
+            className="px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            대시보드
+          </Link>
+          <Link
+            href="/guestbook"
+            className="px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 font-medium"
+          >
+            방명록
+          </Link>
+        </nav>
+        <div className="mt-auto">
+          <Link
+            href="/api/auth/signout"
+            className="inline-flex items-center px-3 py-1.5 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            로그아웃
+          </Link>
         </div>
-        {submitError && <p className="text-red-600 dark:text-red-400 text-sm mb-2">{submitError}</p>}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {submitting ? "등록 중..." : "등록"}
-        </button>
-      </form>
+      </aside>
+      <section className="flex-1 p-6 max-w-3xl">
+        <h2 className="text-xl font-bold mb-4">방명록</h2>
 
-      <section>
-        <h2 className="text-lg font-semibold mb-3">방명록 목록</h2>
-        {loading && <p className="text-gray-500 dark:text-gray-400">로딩 중...</p>}
-        {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
-        {!loading && !error && entries.length === 0 && (
-          <p className="text-gray-500 dark:text-gray-400">아직 남긴 글이 없습니다.</p>
-        )}
-        {!loading && !error && entries.length > 0 && (
-          <ul className="space-y-4">
-            {entries.map((entry) => (
-              <li
-                key={entry.id}
-                className="p-4 border rounded-lg dark:border-gray-700 bg-white dark:bg-gray-800/50"
-              >
-                <div className="flex justify-between items-baseline gap-2 mb-1">
-                  <span className="font-medium text-gray-900 dark:text-gray-100">{entry.author}</span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 shrink-0">
-                    {formatDate(entry.created_at)}
-                  </span>
-                </div>
-                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words">
-                  {entry.content}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
+        <form
+          onSubmit={handleSubmit}
+          className="mb-8 p-4 border rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50"
+        >
+          <div className="mb-3">
+            <label
+              htmlFor="guestbook-author"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              닉네임 (아이디)
+            </label>
+            <input
+              id="guestbook-author"
+              type="text"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="아무 아이디나 입력"
+              maxLength={50}
+              className="w-full px-3 py-2 border rounded dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+              disabled={submitting}
+            />
+          </div>
+          <div className="mb-3">
+            <label
+              htmlFor="guestbook-content"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              댓글
+            </label>
+            <textarea
+              id="guestbook-content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="방명록에 남길 말을 적어 주세요"
+              rows={3}
+              maxLength={500}
+              className="w-full px-3 py-2 border rounded dark:border-gray-600 dark:bg-gray-800 dark:text-white resize-y"
+              disabled={submitting}
+            />
+          </div>
+          {submitError && (
+            <p className="text-red-600 dark:text-red-400 text-sm mb-2">
+              {submitError}
+            </p>
+          )}
+          <button
+            type="submit"
+            disabled={submitting}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          >
+            {submitting ? "등록 중..." : "등록"}
+          </button>
+        </form>
+
+        <section>
+          <h3 className="text-lg font-semibold mb-3">방명록 목록</h3>
+          {loading && (
+            <p className="text-gray-500 dark:text-gray-400">로딩 중...</p>
+          )}
+          {error && (
+            <p className="text-red-600 dark:text-red-400">{error}</p>
+          )}
+          {!loading && !error && entries.length === 0 && (
+            <p className="text-gray-500 dark:text-gray-400">
+              아직 남긴 글이 없습니다.
+            </p>
+          )}
+          {!loading && !error && entries.length > 0 && (
+            <ul className="space-y-4">
+              {entries.map((entry) => (
+                <li
+                  key={entry.id}
+                  className="p-4 border rounded-lg dark:border-gray-700 bg-white dark:bg-gray-800/50"
+                >
+                  <div className="flex justify-between items-baseline gap-2 mb-1">
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {entry.author}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 shrink-0">
+                      {formatDate(entry.created_at)}
+                    </span>
+                  </div>
+                  <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words">
+                    {entry.content}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </section>
     </main>
   );

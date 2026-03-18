@@ -95,102 +95,110 @@ export default function DashboardPage() {
   const forecastTimes = Object.keys(forecastByTime).sort();
 
   return (
-    <main className="min-h-screen p-6 max-w-5xl mx-auto">
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-bold">기상청 초단기실황·예보 대시보드</h1>
-        <div className="flex gap-2">
+    <main className="min-h-screen flex">
+      <aside className="w-56 border-r border-gray-200 dark:border-gray-800 p-4 flex flex-col gap-4">
+        <div>
+          <h1 className="text-base font-bold mb-1">기상 대시보드</h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            기상청 초단기실황·예보
+          </p>
+        </div>
+        <nav className="flex flex-col gap-1 text-sm">
           <Link
-            href="/"
-            className="px-3 py-1.5 text-sm border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            href="/dashboard"
+            className="px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 font-medium"
           >
-            홈
+            대시보드
           </Link>
           <Link
             href="/guestbook"
-            className="px-3 py-1.5 text-sm border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             방명록
           </Link>
+        </nav>
+        <div className="mt-auto">
           <Link
             href="/api/auth/signout"
-            className="px-3 py-1.5 text-sm bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+            className="inline-flex items-center px-3 py-1.5 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             로그아웃
           </Link>
         </div>
-      </header>
+      </aside>
+      <section className="flex-1 p-6 max-w-5xl">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          출처: 기상청_단기예보(구 동네예보) 조회서비스, 공공데이터포털
+        </p>
 
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        출처: 기상청_단기예보(구 동네예보) 조회서비스, 공공데이터포털
-      </p>
-
-      {loading && <p>로딩 중...</p>}
-      {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
-      {!loading && !error && (
-        <>
-          <section className="mb-8">
-            <h2 className="text-lg font-semibold mb-3">초단기실황</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-              발표: {realtime[0]?.baseDate ?? "-"} {formatTime(realtime[0]?.baseTime)}
-            </p>
-            <div className="overflow-x-auto border rounded-lg dark:border-gray-700">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-gray-100 dark:bg-gray-800">
-                  <tr>
-                    <th className="p-3 font-medium">항목</th>
-                    <th className="p-3 font-medium">값</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(realtimeByCategory).map(([cat, value]) => (
-                    <tr key={cat} className="border-t dark:border-gray-700">
-                      <td className="p-3">{CATEGORY_LABEL[cat] ?? cat}</td>
-                      <td className="p-3">
-                        {cat === "PTY" ? PTY_LABEL[value] ?? value : value}
-                      </td>
+        {loading && <p>로딩 중...</p>}
+        {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
+        {!loading && !error && (
+          <>
+            <section className="mb-8">
+              <h2 className="text-lg font-semibold mb-3">초단기실황</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                발표: {realtime[0]?.baseDate ?? "-"} {formatTime(realtime[0]?.baseTime)}
+              </p>
+              <div className="overflow-x-auto border rounded-lg dark:border-gray-700">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-gray-100 dark:bg-gray-800">
+                    <tr>
+                      <th className="p-3 font-medium">항목</th>
+                      <th className="p-3 font-medium">값</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold mb-3">초단기예보</h2>
-            <div className="overflow-x-auto border rounded-lg dark:border-gray-700">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-gray-100 dark:bg-gray-800">
-                  <tr>
-                    <th className="p-3 font-medium">예보시각</th>
-                    <th className="p-3 font-medium">기온(°C)</th>
-                    <th className="p-3 font-medium">하늘</th>
-                    <th className="p-3 font-medium">강수형태</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {forecastTimes.map((key) => {
-                    const [date, time] = key.split("-");
-                    const row = forecastByTime[key];
-                    const t1h = row?.T1H ?? "-";
-                    const sky = row?.SKY != null ? SKY_LABEL[row.SKY] ?? row.SKY : "-";
-                    const pty = row?.PTY != null ? PTY_LABEL[row.PTY] ?? row.PTY : "-";
-                    return (
-                      <tr key={key} className="border-t dark:border-gray-700">
+                  </thead>
+                  <tbody>
+                    {Object.entries(realtimeByCategory).map(([cat, value]) => (
+                      <tr key={cat} className="border-t dark:border-gray-700">
+                        <td className="p-3">{CATEGORY_LABEL[cat] ?? cat}</td>
                         <td className="p-3">
-                          {date} {formatTime(time)}
+                          {cat === "PTY" ? PTY_LABEL[value] ?? value : value}
                         </td>
-                        <td className="p-3">{t1h}</td>
-                        <td className="p-3">{sky}</td>
-                        <td className="p-3">{pty}</td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </>
-      )}
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold mb-3">초단기예보</h2>
+              <div className="overflow-x-auto border rounded-lg dark:border-gray-700">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-gray-100 dark:bg-gray-800">
+                    <tr>
+                      <th className="p-3 font-medium">예보시각</th>
+                      <th className="p-3 font-medium">기온(°C)</th>
+                      <th className="p-3 font-medium">하늘</th>
+                      <th className="p-3 font-medium">강수형태</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {forecastTimes.map((key) => {
+                      const [date, time] = key.split("-");
+                      const row = forecastByTime[key];
+                      const t1h = row?.T1H ?? "-";
+                      const sky = row?.SKY != null ? SKY_LABEL[row.SKY] ?? row.SKY : "-";
+                      const pty = row?.PTY != null ? PTY_LABEL[row.PTY] ?? row.PTY : "-";
+                      return (
+                        <tr key={key} className="border-t dark:border-gray-700">
+                          <td className="p-3">
+                            {date} {formatTime(time)}
+                          </td>
+                          <td className="p-3">{t1h}</td>
+                          <td className="p-3">{sky}</td>
+                          <td className="p-3">{pty}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </>
+        )}
+      </section>
     </main>
   );
 }
