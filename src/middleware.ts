@@ -6,7 +6,7 @@ import { isAllowedEmail } from "@/lib/turso";
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   if (path.startsWith("/api/auth")) return NextResponse.next();
-  if (path.startsWith("/api/stations") || path.startsWith("/api/check-allowed")) {
+  if (path.startsWith("/api/weather") || path.startsWith("/api/check-allowed")) {
     return NextResponse.next();
   }
   if (path === "/" || path === "/dashboard") {
@@ -29,5 +29,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/dashboard", "/api/stations"],
+  matcher: ["/", "/dashboard", "/api/weather"],
 };

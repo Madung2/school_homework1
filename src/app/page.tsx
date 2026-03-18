@@ -14,7 +14,7 @@ export default async function HomePage({
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <h1 className="text-2xl font-bold mb-4">서울 따릉이 대여소 대시보드</h1>
+      <h1 className="text-2xl font-bold mb-4">기상청 초단기실황·예보 대시보드</h1>
       {error === "AccessDenied" && (
         <p className="text-red-600 dark:text-red-400 mb-4">
           접근 권한이 없습니다. 허용된 계정만 이용할 수 있습니다.

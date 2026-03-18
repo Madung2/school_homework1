@@ -1,6 +1,6 @@
-# 따릉이 대여소 대시보드
+# 기상청 초단기실황·예보 대시보드
 
-서울시 공공자전거 **따릉이** 대여소 정보를 조회할 수 있는 대시보드 웹 서비스입니다.  
+기상청 **초단기실황**(getUltraSrtNcst)과 **초단기예보**(getUltraSrtFcst) API로 실시간 날씨 정보를 조회하는 대시보드 웹 서비스입니다.  
 접근 허용 리스트에 등록된 사용자만 Google 로그인 후 이용할 수 있습니다.
 
 ## 기술 스택
@@ -13,10 +13,10 @@
 
 ## 공공 데이터 출처
 
-- **데이터**: 서울시 공공자전거 따릉이 대여소 정보  
-- **제공**: [서울 열린데이터광장](https://data.seoul.go.kr/dataList/OA-13252/F/1/datasetView.do) (OA-13252)  
-- **라이선스**: 공공누리 1유형(출처 표시, 상업적 이용·변경 가능)  
-- **갱신**: 반기(6개월). 최신 파일을 다운로드 후 `src/data/stations.json`을 교체하면 됩니다.
+- **데이터**: 기상청_단기예보(구 동네예보) 조회서비스 — 초단기실황·초단기예보
+- **제공**: [공공데이터포털](https://www.data.go.kr/) (기상청 API)
+- **엔드포인트**: `VilageFcstInfoService_2.0` (getUltraSrtNcst, getUltraSrtFcst)
+- **갱신**: 실시간 API 호출 (매시 정시/30분 발표 자료)
 
 ## 로컬 실행
 
@@ -30,7 +30,8 @@
    - `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`: [Turso](https://turso.tech)에서 DB 생성 후 발급  
    - `NEXTAUTH_URL`: 로컬은 `http://localhost:3000`  
    - `NEXTAUTH_SECRET`: 임의의 안전한 랜덤 문자열  
-   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: [Google Cloud Console](https://console.cloud.google.com) OAuth 2.0 클라이언트 ID
+   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: [Google Cloud Console](https://console.cloud.google.com) OAuth 2.0 클라이언트 ID  
+   - `WEATHER_API_SERVICE_KEY`: [공공데이터포털](https://www.data.go.kr/)에서 기상청_단기예보 조회서비스 인증키 발급 (일반 인증키, 디코딩된 값 사용 권장)
 
 3. Turso 테이블 및 시드  
    - Turso 대시보드 또는 CLI에서 `scripts/schema.sql` 실행  
@@ -40,7 +41,7 @@
    ```bash
    npm run dev
    ```  
-   브라우저에서 http://localhost:3000 접속 후 Google 로그인 → 대시보드에서 따릉이 대여소 목록 확인.
+   브라우저에서 http://localhost:3000 접속 후 Google 로그인 → 대시보드에서 초단기실황·예보 확인.
 
 ## 허용 리스트 관리
 
@@ -55,15 +56,15 @@
    - `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`  
    - `NEXTAUTH_URL`: Vercel 배포 URL (예: `https://프로젝트명.vercel.app`)  
    - `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`  
+   - `WEATHER_API_SERVICE_KEY`: 공공데이터포털 기상청 API 인증키  
 3. Google OAuth 승인된 리디렉션 URI에 `https://프로젝트명.vercel.app/api/auth/callback/google`를 추가합니다.  
 4. 이후 `git push` 시 자동으로 빌드·배포됩니다.
 
 ## 문서
 
 - [계획서 및 상세 설계](docs/PLAN.md)
-- [따릉이 데이터 업데이트 방법](docs/DATA.md)
+- [날씨 API 데이터 출처](docs/DATA.md)
 
 ## 라이선스
 
-공공 데이터는 공공누리 1유형을 따릅니다. 본 프로젝트 코드는 MIT 등 원하는 라이선스로 사용 가능합니다.
-
+공공 데이터는 공공데이터포털 이용약관을 따릅니다. 본 프로젝트 코드는 MIT 등 원하는 라이선스로 사용 가능합니다.
