@@ -26,6 +26,14 @@ async function seed() {
       created_at TEXT DEFAULT (datetime('now'))
     )
   `);
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS guestbook (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      author TEXT NOT NULL,
+      content TEXT NOT NULL,
+      created_at TEXT DEFAULT (datetime('now'))
+    )
+  `);
   try {
     await client.execute({
       sql: "INSERT INTO allowed_members (email) VALUES (?)",
