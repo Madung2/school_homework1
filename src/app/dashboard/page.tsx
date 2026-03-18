@@ -119,7 +119,7 @@ export default function DashboardPage() {
         </nav>
         <div className="mt-auto">
           <Link
-            href="/api/auth/signout"
+            href="/api/auth/signout?callbackUrl=%2Fapi%2Fauth%2Fsignin%2Fgoogle"
             className="inline-flex items-center px-3 py-1.5 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             로그아웃
