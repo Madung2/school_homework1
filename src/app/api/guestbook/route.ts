@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { getGuestbookEntries, addGuestbookEntry, turso } from "@/lib/turso";
 import { authOptions } from "@/lib/auth";
+import { getGuestbookEntries, addGuestbookEntry, turso } from "@/lib/turso";
 
+const AUTHOR_MAX = 50;
 const CONTENT_MAX = 500;
 
 export async function GET() {
@@ -29,9 +30,13 @@ export async function POST(request: Request) {
     );
   }
   const session = await getServerSession(authOptions);
-  const author = session?.user?.email?.trim() ?? "";
-  if (!author) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const email = session?.user?.email?.trim() ?? "";
+  const name = session?.user?.name?.trim() ?? "";
+  if (!email) {
+    return NextResponse.json(
+      { error: "Google 로그인 후 작성할 수 있습니다." },
+      { status: 401 }
+    );
   }
 
   let body: { content?: string };
@@ -41,8 +46,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
   }
   const content = typeof body.content === "string" ? body.content.trim() : "";
+  const author = name ? `${name} (${email})` : email;
+
   if (!content) {
     return NextResponse.json({ error: "댓글 내용을 입력해 주세요." }, { status: 400 });
+  }
+  if (author.length > AUTHOR_MAX) {
+    return NextResponse.json(
+      { error: `닉네임은 ${AUTHOR_MAX}자 이내로 입력해 주세요.` },
+      { status: 400 }
+    );
   }
   if (content.length > CONTENT_MAX) {
     return NextResponse.json(
