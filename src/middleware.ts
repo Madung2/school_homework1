@@ -15,10 +15,9 @@ export async function middleware(request: NextRequest) {
   if (path === "/" || path === "/dashboard") {
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
     if (!token?.email) {
-      if (path === "/dashboard") {
-        return NextResponse.redirect(new URL("/", request.url));
-      }
-      return NextResponse.next();
+      const signInUrl = new URL("/api/auth/signin/google", request.url);
+      signInUrl.searchParams.set("callbackUrl", "/dashboard");
+      return NextResponse.redirect(signInUrl);
     }
   }
   return NextResponse.next();
