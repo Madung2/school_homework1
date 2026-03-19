@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { isAllowedEmail } from "@/lib/turso";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
@@ -18,13 +17,6 @@ export async function middleware(request: NextRequest) {
     if (!token?.email) {
       if (path === "/dashboard") {
         return NextResponse.redirect(new URL("/", request.url));
-      }
-      return NextResponse.next();
-    }
-    if (path === "/dashboard") {
-      const allowed = await isAllowedEmail(token.email);
-      if (!allowed) {
-        return NextResponse.redirect(new URL("/?error=AccessDenied", request.url));
       }
       return NextResponse.next();
     }

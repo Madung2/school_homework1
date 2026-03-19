@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { getGuestbookEntries, addGuestbookEntry, turso } from "@/lib/turso";
+import { authOptions } from "@/lib/auth";
 
-const AUTHOR_MAX = 50;
 const CONTENT_MAX = 500;
 
 export async function GET() {
@@ -27,25 +28,21 @@ export async function POST(request: Request) {
       { status: 503 }
     );
   }
-  let body: { author?: string; content?: string };
+  const session = await getServerSession(authOptions);
+  const author = session?.user?.email?.trim() ?? "";
+  if (!author) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  let body: { content?: string };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
   }
-  const author = typeof body.author === "string" ? body.author.trim() : "";
   const content = typeof body.content === "string" ? body.content.trim() : "";
-  if (!author) {
-    return NextResponse.json({ error: "닉네임을 입력해 주세요." }, { status: 400 });
-  }
   if (!content) {
     return NextResponse.json({ error: "댓글 내용을 입력해 주세요." }, { status: 400 });
-  }
-  if (author.length > AUTHOR_MAX) {
-    return NextResponse.json(
-      { error: `닉네임은 ${AUTHOR_MAX}자 이내로 입력해 주세요.` },
-      { status: 400 }
-    );
   }
   if (content.length > CONTENT_MAX) {
     return NextResponse.json(
